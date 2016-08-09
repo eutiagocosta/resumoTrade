@@ -1,3 +1,6 @@
+/**
+@Author Tiago Costa
+*/
 package br.com.resumotrade;
 
 import static org.hamcrest.Matchers.equalTo;
