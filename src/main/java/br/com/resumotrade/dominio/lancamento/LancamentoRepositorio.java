@@ -8,7 +8,7 @@ public interface LancamentoRepositorio {
 	
 	void salvar(Lancamento  lancamento);
 	
-	void remover(LancamentoId lancamento);
+	void remover(LancamentoId lancamentoId);
 	
 	LancamentoId novaIdentidade();
 
