@@ -33,18 +33,26 @@ public class Mercado {
 		this.setDescricao(descricao);
 	}
 	
+	public static Mercado novoFutebol(MercadoId mercadoId, String descricao) {
+		return new Mercado(mercadoId, Esporte.FUTEBOL, descricao);
+	}
+	
+	public static Mercado novoBasquete(MercadoId mercadoId, String descricao) {
+		return new Mercado(mercadoId, Esporte.BASQUETE, descricao);
+	}
+
 	private Mercado(){}
 	
 	public String descricao() {
 		return descricao;
 	}
 	
-	public static Mercado novoFutebol(MercadoId mercadoId, String descricao) {
-		return new Mercado(mercadoId, Esporte.FUTEBOL, descricao);
+	public MercadoId id() {
+		return mercadoId;
 	}
-
-	public String getDescricao() {
-		return descricao;
+	
+	public Esporte esporte(){
+		return esporte;
 	}
 
 	public void setDescricao(String descricao) {
@@ -55,8 +63,8 @@ public class Mercado {
 		this.setDescricao(string);
 	}
 
-	public MercadoId id() {
-		return mercadoId;
+	public void setEsporte(Esporte esporte) {
+		this.esporte = esporte;
 	}
 
 }

@@ -1,6 +1,3 @@
-/**
- @Author Tiago Costa
-*/
 package br.com.resumotrade;
 
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,15 +1,15 @@
-package br.com.resumotrade.dominio.lancamento;
+package br.com.resumotrade.dominio.aposta;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class LancamentoId {
+public class ApostaId {
 	
-	@Column(name="LANCAMENTO_ID")
+	@Column(name="APOSTA_ID")
 	private String id;
 
-	public LancamentoId(String id) {
+	public ApostaId(String id) {
 		this.id = id;
 	}
 	
@@ -18,7 +18,7 @@ public class LancamentoId {
 	}
 	
 	@SuppressWarnings("unused")
-	private LancamentoId(){}
+	private ApostaId(){}
 
 	@Override
 	public int hashCode() {
@@ -36,7 +36,7 @@ public class LancamentoId {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		LancamentoId other = (LancamentoId) obj;
+		ApostaId other = (ApostaId) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

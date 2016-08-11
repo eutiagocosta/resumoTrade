@@ -1,4 +1,4 @@
-package br.com.resumotrade.dominio.lancamento;
+package br.com.resumotrade.dominio.aposta;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,16 +11,16 @@ import javax.persistence.Table;
 import br.com.resumotrade.dominio.mercado.MercadoId;
 
 @Entity
-@SequenceGenerator(name="SEQ", sequenceName="SQ_LANCAMENTO")
-@Table(name="LANCAMENTO")
-public class Lancamento {
+@SequenceGenerator(name="SEQ", sequenceName="SQ_APOSTA")
+@Table(name="APOSTA")
+public class Aposta {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO, generator="SEQ")
 	private Long id;
 	
 	@Embedded
-	private LancamentoId lancamentoId;
+	private ApostaId apostaId;
 	
 	@Embedded
 	private MercadoId mercadoId;
@@ -28,15 +28,15 @@ public class Lancamento {
 	private Double odd;
 	private Double stake;
 
-	public Lancamento(LancamentoId lancamentoId, MercadoId mercadoId, Double odd, Double stake) {
-		this.lancamentoId = lancamentoId;
+	public Aposta(ApostaId apostaId, MercadoId mercadoId, Double odd, Double stake) {
+		this.apostaId = apostaId;
 		this.mercadoId = mercadoId;
 		this.odd = odd;
 		this.stake = stake;
 	}
 
-	public LancamentoId id() {
-		return lancamentoId;
+	public ApostaId id() {
+		return apostaId;
 	}
 	
 	public MercadoId mercadoId(){
@@ -67,7 +67,7 @@ public class Lancamento {
 	 * Somente para JPA -----------------------------------------------------------------------------------------------------------------
 	 */
 	@SuppressWarnings("unused")
-	private Lancamento(){}
+	private Aposta(){}
 
 	public void setMercadoId(MercadoId mercadoId) {
 		this.mercadoId = mercadoId;
