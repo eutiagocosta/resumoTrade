@@ -1,21 +1,29 @@
 package br.com.resumotrade.dominio.lancamento;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import javax.transaction.Transactional;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import br.com.resumotrade.dominio.lancamento.Lancamento;
-import br.com.resumotrade.dominio.lancamento.LancamentoId;
+import br.com.resumotrade.Application;
 import br.com.resumotrade.dominio.mercado.MercadoId;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes=Application.class)
+@Transactional
 public class LancamentoTest {
 	
 	@Autowired
 	private LancamentoRepositorio repositorio;
 	
 	@Test
-	public void novoLancamento(){
+	public void novo(){
 		
 		Lancamento lancamento = new Lancamento(new LancamentoId("3243"), new MercadoId("123"), new Double(1.5), new Double(100));
 		
@@ -27,7 +35,7 @@ public class LancamentoTest {
 	}
 	
 	@Test
-	public void alterarLancamento(){
+	public void alterar(){
 		
 		Lancamento lancamento = new Lancamento(new LancamentoId("3243"), new MercadoId("123"), new Double(1.5), new Double(100));
 		
@@ -42,13 +50,23 @@ public class LancamentoTest {
 	}
 	
 	@Test
-	public void gravarLancamento(){
+	public void gravar(){
 		
 		Lancamento lancamento = new Lancamento(new LancamentoId("3243"), new MercadoId("123"), new Double(1.5), new Double(100));
 		repositorio.salvar(lancamento);
-		
 		Lancamento aposta = repositorio.buscarLancamentoPorId(lancamento.id());
 		
 		assertEquals(lancamento.id(), aposta.id());
+	}
+	
+	@Test
+	public void remover(){
+		
+		Lancamento lancamento = new Lancamento(new LancamentoId("3243"), new MercadoId("123"), new Double(1.5), new Double(100));
+		repositorio.salvar(lancamento);
+		repositorio.remover(lancamento.id());
+		
+		assertNull(repositorio.buscarLancamentoPorId(lancamento.id()));
+		
 	}
 }

@@ -1,10 +1,12 @@
 package br.com.resumotrade.dominio.lancamento;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class LancamentoId {
 	
+	@Column(name="LANCAMENTO_ID")
 	private String id;
 
 	public LancamentoId(String id) {
@@ -14,6 +16,9 @@ public class LancamentoId {
 	public String id() {
 		return this.id;
 	}
+	
+	@SuppressWarnings("unused")
+	private LancamentoId(){}
 
 	@Override
 	public int hashCode() {

@@ -1,10 +1,12 @@
 package br.com.resumotrade.dominio.mercado;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class MercadoId {
 	
+	@Column(name="MERCADO_ID")
 	private String id;
 
 	public MercadoId(String id) {

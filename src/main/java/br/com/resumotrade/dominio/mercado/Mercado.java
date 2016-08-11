@@ -1,16 +1,31 @@
 package br.com.resumotrade.dominio.mercado;
 
 import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
+@Entity
+@SequenceGenerator(name="SEQ", sequenceName="SQ_MERCADO")
+@Table(name="MERCADO")
 public class Mercado {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO, generator="SEQ")
 	private Long id;
 	
 	@Embedded
 	private MercadoId mercadoId;
-	private Esporte esporte;
-	private String descricao;
 	
+	@Enumerated(EnumType.STRING)
+	private Esporte esporte;
+	
+	private String descricao;
 	
 	private Mercado(MercadoId mercadoId, Esporte esporte, String descricao) {
 		this.mercadoId = mercadoId;

@@ -2,6 +2,9 @@ package br.com.resumotrade.dominio.lancamento;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -12,6 +15,8 @@ import br.com.resumotrade.dominio.mercado.MercadoId;
 @Table(name="LANCAMENTO")
 public class Lancamento {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO, generator="SEQ")
 	private Long id;
 	
 	@Embedded
