@@ -2,7 +2,6 @@ package br.com.resumotrade.dominio.mercado;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -68,10 +67,11 @@ public class MercadoTest {
 		Mercado mercado6 = Mercado.novoBasquete(repositorio.novaIdentidade(), "Probabilidades Back");
 		repositorio.salvar(mercado6);
 		
-		List<Mercado> lista = new ArrayList<>();
-		lista = repositorio.buscarMercadosPorEsporte(Esporte.FUTEBOL);
+		List<Mercado> listaFutebol = repositorio.buscarMercadosPorEsporte(Esporte.buscarEsporte("FUTEBOL"));
+		List<Mercado> listaBasquete = repositorio.buscarMercadosPorEsporte(Esporte.buscarEsporte("BASQUETE"));
 		
-		assertEquals(4, lista.size());
+		assertEquals(4, listaFutebol.size());
+		assertEquals(2, listaBasquete.size());
 	}
 
 }

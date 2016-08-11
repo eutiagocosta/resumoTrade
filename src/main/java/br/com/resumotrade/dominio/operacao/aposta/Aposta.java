@@ -1,4 +1,4 @@
-package br.com.resumotrade.dominio.aposta;
+package br.com.resumotrade.dominio.operacao.aposta;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -20,27 +20,46 @@ public class Aposta {
 	private Long id;
 	
 	@Embedded
-	private ApostaId apostaId;
-	
-	@Embedded
 	private MercadoId mercadoId;
 	
 	private Double odd;
 	private Double stake;
-
-	public Aposta(ApostaId apostaId, MercadoId mercadoId, Double odd, Double stake) {
-		this.apostaId = apostaId;
+	private Double potencial;
+	private Double profit;
+	
+	private boolean liquidada;
+	
+	public Aposta(MercadoId mercadoId, Double odd, Double stake, Double potencial) {
 		this.mercadoId = mercadoId;
 		this.odd = odd;
 		this.stake = stake;
+		this.potencial = potencial;
+		this.liquidada = false;
 	}
-
-	public ApostaId id() {
-		return apostaId;
+	
+	public void informarResultado(Double profit) {
+		this.profit = profit;
+		this.setLiquidada(true);
+	}
+	
+	public boolean liquidada(){
+		return liquidada;
 	}
 	
 	public MercadoId mercadoId(){
 		return this.mercadoId;
+	}
+	
+	public Long id(){
+		return id;
+	}
+	
+	public Double potencial(){
+		return potencial;
+	}
+	
+	public Double profit(){
+		return profit;
 	}
 
 	public Double odd() {
@@ -79,6 +98,10 @@ public class Aposta {
 
 	public void setStake(Double stake) {
 		this.stake = stake;
+	}
+
+	public void setLiquidada(boolean liquidada) {
+		this.liquidada = liquidada;
 	}
 
 }

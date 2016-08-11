@@ -1,15 +1,15 @@
-package br.com.resumotrade.dominio.aposta;
+package br.com.resumotrade.dominio.operacao;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ApostaId {
-	
-	@Column(name="APOSTA_ID")
+public class OperacaoId {
+
+	@Column(name="OPERACAO_ID")
 	private String id;
 
-	public ApostaId(String id) {
+	public OperacaoId(String id){
 		this.id = id;
 	}
 	
@@ -18,7 +18,7 @@ public class ApostaId {
 	}
 	
 	@SuppressWarnings("unused")
-	private ApostaId(){}
+	private OperacaoId(){}
 
 	@Override
 	public int hashCode() {
@@ -36,7 +36,7 @@ public class ApostaId {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ApostaId other = (ApostaId) obj;
+		OperacaoId other = (OperacaoId) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -44,5 +44,11 @@ public class ApostaId {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "OperacaoId [id=" + id + "]";
+	}
+	
 	
 }
