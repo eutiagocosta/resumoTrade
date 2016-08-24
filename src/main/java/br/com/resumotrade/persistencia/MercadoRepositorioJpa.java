@@ -47,4 +47,5 @@ public class MercadoRepositorioJpa implements MercadoRepositorio{
 	public List<Mercado> buscarMercadosPorEsporte(Esporte esporte) {
 		return repositorio.findByEsporte(esporte);
 	}
+
 }

@@ -47,24 +47,57 @@ public class Mercado {
 		return descricao;
 	}
 	
-	public MercadoId id() {
+	public MercadoId mercadoId() {
 		return mercadoId;
 	}
 	
 	public Esporte esporte(){
 		return esporte;
 	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+	
+	public Long id(){
+		return id;
 	}
 
-	public void alterarDescricao(String string) {
-		this.setDescricao(string);
+	public void alterarEsporte(Esporte sporte) {
+		setEsporte(esporte);
+	}
+
+	public void alterarDescricao(String descricao) {
+		setDescricao(descricao);
 	}
 
 	public void setEsporte(Esporte esporte) {
 		this.esporte = esporte;
+	}
+	
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((mercadoId == null) ? 0 : mercadoId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Mercado other = (Mercado) obj;
+		if (mercadoId == null) {
+			if (other.mercadoId != null)
+				return false;
+		} else if (!mercadoId.equals(other.mercadoId))
+			return false;
+		return true;
 	}
 
 }

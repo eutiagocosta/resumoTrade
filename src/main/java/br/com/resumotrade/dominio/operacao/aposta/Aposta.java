@@ -5,10 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import br.com.resumotrade.dominio.mercado.MercadoId;
+import br.com.resumotrade.dominio.operacao.Operacao;
 
 @Entity
 @SequenceGenerator(name="SEQ", sequenceName="SQ_APOSTA")
@@ -26,18 +29,24 @@ public class Aposta {
 	private Double stake;
 	private Double potencial;
 	private Double profit;
-	
 	private boolean liquidada;
 	
-	public Aposta(MercadoId mercadoId, Double odd, Double stake, Double potencial) {
-		this.mercadoId = mercadoId;
-		this.odd = odd;
-		this.stake = stake;
-		this.potencial = potencial;
-		this.liquidada = false;
+	@ManyToOne
+    @JoinColumn(name="ID_OPERACAO")
+	private Operacao operacao;
+	
+	public Aposta(MercadoId mercadoId, Double odd, Double stake, Double potencial, Operacao operacao) {
+		setMercadoId(mercadoId);
+		setOdd(odd);
+		setStake(stake);
+		setPotencial(potencial);
+		setLiquidada(false);
+		setOperacao(operacao);
 	}
 	
 	public void informarResultado(Double profit) {
+		if (profit > this.odd * this.stake)
+			throw new RuntimeException("Resultado de Lucro/Perda Inválido!");
 		this.profit = profit;
 		this.setLiquidada(true);
 	}
@@ -63,11 +72,15 @@ public class Aposta {
 	}
 
 	public Double odd() {
-		return this.odd;
+		return odd;
 	}
 
 	public Double stake() {
-		return this.stake;
+		return stake;
+	}
+	
+	public Operacao operacao() {
+		return operacao;
 	}
 
 	public void alterarMercado(MercadoId mercadoId) {
@@ -80,6 +93,10 @@ public class Aposta {
 
 	public void alterarOdd(Double valor) {
 		this.setOdd(valor);
+	}
+	
+	public void alterarPotencial(Double potencial) {
+		this.setPotencial(potencial);
 	}
 	
 	/**
@@ -102,6 +119,14 @@ public class Aposta {
 
 	public void setLiquidada(boolean liquidada) {
 		this.liquidada = liquidada;
+	}
+
+	public void setPotencial(Double potencial) {
+		this.potencial = potencial;
+	}
+
+	public void setOperacao(Operacao operacao) {
+		this.operacao = operacao;
 	}
 
 }

@@ -6,7 +6,7 @@ public interface MercadoRepositorio {
 	
 	void salvar(Mercado mercado);
 
-	void remover(MercadoId mercado);
+	void remover(MercadoId mercadoId);
 
 	MercadoId novaIdentidade();;
 

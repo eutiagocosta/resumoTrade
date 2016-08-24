@@ -1,23 +1,23 @@
 package br.com.resumotrade.dominio.operacao;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import br.com.resumotrade.dominio.mercado.Esporte;
+import br.com.resumotrade.dominio.mercado.MercadoId;
 import br.com.resumotrade.dominio.operacao.aposta.Aposta;
 
 @Entity
@@ -45,22 +45,29 @@ public class Operacao {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
-	@OneToMany(orphanRemoval=true,cascade=CascadeType.ALL)
-	@JoinColumn
-	private List<Aposta> aposta;
+	@OneToMany(mappedBy="operacao",cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
+	private Set<Aposta> apostas;
 
-	public Operacao(Casa casa, Esporte esporte, LocalDate data, String mandante, String visitante) {
+	public Operacao(OperacaoId operacaoId, Casa casa, Esporte esporte, LocalDate data, String mandante, String visitante) {
+		this.operacaoId = operacaoId;
 		this.casa = casa;
 		this.esporte = esporte;
 		this.data = data;
 		this.mandante = mandante;
 		this.visitante = visitante;
-		this.aposta = new ArrayList<>();
 		this.status = Status.ABERTO;
 	}
 	
-	public void novaAposta(Aposta aposta) {
-		this.aposta.add(aposta);
+	public Aposta novaAposta(MercadoId mercadoId, Double odd, Double stake, Double potencial) {
+		return new Aposta(mercadoId, odd, stake, potencial, this);
+	}
+	
+	public Aposta obterAposta(Long id) {
+		for (Aposta aposta : apostas) {
+			if (aposta.id() == id)
+				return aposta;
+		}
+		return null;
 	}
 	
 	public Status status() {
@@ -71,12 +78,8 @@ public class Operacao {
 		this.status = Status.ENCERRADO;
 	}
 	
-	public OperacaoId id() {
+	public OperacaoId operacaoId() {
 		return operacaoId;
-	}
-	
-	public List<Aposta> apostas() {
-		return aposta;
 	}
 	
 	public String mandante() {
@@ -101,6 +104,10 @@ public class Operacao {
 	
 	public void alterarVisitante(String visitante) {
 		this.setVisitante(visitante);
+	}
+	
+	public void alterarData(String data) {
+		this.data = LocalDate.parse(data);
 	}
 
 	public void alterarMandante(String mandante) {
@@ -138,10 +145,6 @@ public class Operacao {
 		this.visitante = visitante;
 	}
 
-	public void setAposta(List<Aposta> aposta) {
-		this.aposta = aposta;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -170,6 +173,7 @@ public class Operacao {
 	@Override
 	public String toString() {
 		return "Operacao [id=" + id + ", operacaoId=" + operacaoId + ", casa=" + casa + ", esporte=" + esporte
-				+ ", data=" + data + ", mandante=" + mandante + ", visitante=" + visitante + ", aposta=" + aposta + "]";
+				+ ", data=" + data + ", mandante=" + mandante + ", visitante=" + visitante + ", apostas=" + apostas + "]";
 	}
+	
 }

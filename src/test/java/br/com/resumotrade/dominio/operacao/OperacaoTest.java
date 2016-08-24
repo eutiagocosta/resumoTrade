@@ -1,13 +1,12 @@
 package br.com.resumotrade.dominio.operacao;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import br.com.resumotrade.Application;
 import br.com.resumotrade.dominio.mercado.Esporte;
-import br.com.resumotrade.dominio.mercado.MercadoId;
-import br.com.resumotrade.dominio.operacao.aposta.Aposta;
+import br.com.resumotrade.dominio.operacao.aposta.ApostaComando;
+import br.com.resumotrade.dominio.operacao.aposta.ApostaService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes=Application.class)
@@ -25,92 +24,281 @@ import br.com.resumotrade.dominio.operacao.aposta.Aposta;
 public class OperacaoTest {
 	
 	@Autowired
+	private ApostaService apostaServico;
+	
+	@Autowired
 	private OperacaoRepositorio repositorio;
-	
-	private Operacao operacao;
-	
-	@Before
-	public void setUp(){
-		
-		this.operacao = new Operacao(Casa.BETFAIR, Esporte.FUTEBOL, LocalDate.now(), "REAL MADRID", "BARCELONA");
-	    this.operacao.novaAposta(new Aposta(new MercadoId("123"), new Double(1.5), new Double(100), new Double(150)));
-	    this.operacao.novaAposta(new Aposta(new MercadoId("1343"), new Double(1.5), new Double(100), new Double(150)));
-	    this.operacao.novaAposta(new Aposta(new MercadoId("333"), new Double(1.5), new Double(100), new Double(150)));
-	    this.operacao.novaAposta(new Aposta(new MercadoId("99878"), new Double(1.5), new Double(100),new Double(150)));
-	}
 
 	@Test
 	public void novaOperacao(){
+		Operacao operacao = constroiOperacao();
+		repositorio.salvar(operacao);
 		
+		operacao = repositorio.buscarOperacaoPorId(operacao.operacaoId());
+		
+		assertEquals("BETFAIR", operacao.casa().toString());
+		assertEquals("FUTEBOL", operacao.esporte().toString());
+		assertEquals("2016-08-24", operacao.data().toString());
 		assertEquals("REAL MADRID", operacao.mandante());
 		assertEquals("BARCELONA", operacao.visitante());
 	}
 	
 	@Test
 	public void editarOperacao(){
-	
-		operacao.alterarVisitante("PSG");
+		
+		Operacao operacao = constroiOperacao();
+		
 		operacao.alterarMandante("ROMA");
+		operacao.alterarVisitante("PSG");
 		operacao.alterarEsporte(Esporte.buscarEsporte("BASQUETE"));
 		operacao.alterarCasa(Casa.buscarPorCasa("BET365"));
-		//operacao.alterarData();
+		operacao.alterarData("2016-08-15");
 		
+		repositorio.salvar(operacao);
+		
+		operacao = repositorio.buscarOperacaoPorId(operacao.operacaoId());
+
 		assertEquals("PSG", operacao.visitante());
 		assertEquals("ROMA", operacao.mandante());
 		assertEquals("BASQUETE", operacao.esporte().toString());
 		assertEquals("BET365", operacao.casa().toString());
+		assertEquals("2016-08-15", operacao.data().toString());
 
 	}
-	
-	@Test
-	public void salvarOperacao(){
-	    
-	    repositorio.salvar(operacao);
-	    Operacao resgatada = repositorio.buscarOperacaoPorId(operacao.id());
-	    assertEquals(resgatada.id(), operacao.id());
-	}
-	
-	@Test
-	public void removerApostaDeUmaOperacao(){
-		
-		repositorio.salvar(operacao);
-		Aposta aposta = operacao.apostas().get(1);
-		repositorio.removerApostaDeUmaOperacao(operacao.id(), aposta.id());
-		assertEquals(3, operacao.apostas().size());
-		
-	}
-	
-	@Test
-	public void adicionarResultadoDeUmaAposta(){
-		
-		repositorio.salvar(operacao);
-		Aposta aposta = operacao.apostas().get(0);
-		repositorio.informarResultadoDaAposta(operacao.id(), aposta.id(), new Double(150));
-		assertEquals(150, operacao.apostas().get(0).profit(), 0.001);
-		assertTrue(operacao.apostas().get(0).liquidada());
-	}
-	
+
 	@Test
 	public void alterarStatusOperacaoParaEncerrado(){
 		
+		Operacao operacao = constroiOperacao();
 		repositorio.salvar(operacao);
 		
-//		Aposta aposta1 = operacao.apostas().get(0);
-//		repositorio.informarResultadoDaAposta(operacao.id(), aposta1.id(), new Double(150));
-//
-//		Aposta aposta2 = operacao.apostas().get(1);
-//		repositorio.informarResultadoDaAposta(operacao.id(), aposta2.id(), new Double(150));
-//		
-//		Aposta aposta3 = operacao.apostas().get(2);
-//		repositorio.informarResultadoDaAposta(operacao.id(), aposta3.id(), new Double(150));
-//		
-//		Aposta aposta4 = operacao.apostas().get(3);
-//		repositorio.informarResultadoDaAposta(operacao.id(), aposta4.id(), new Double(150));
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), "1111", new Double(1.5),new Double(100),new Double(150)));
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), "2222", new Double(1.3),new Double(100),new Double(130)));
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), "3333", new Double(1.2),new Double(100),new Double(120)));
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), "4444", new Double(1.8),new Double(100),new Double(180)));
+
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao.operacaoId().id(), 
+																  "1111", 
+																  new Double(1.5),
+																  new Double(100),
+																  new Double(150),
+																  new Double(150),
+																  false));
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao.operacaoId().id(), 
+																  "2222", 
+																  new Double(1.3),
+																  new Double(100),
+																  new Double(130),
+																  new Double(100),
+																  false));
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao.operacaoId().id(), 
+																  "3333", 
+																  new Double(1.2),
+																  new Double(100),
+																  new Double(120),
+																  new Double(-40),
+																  false));
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao.operacaoId().id(), 
+																  "4444", 
+																  new Double(1.8),
+																  new Double(100),
+																  new Double(180),
+																  new Double(-150),
+																  false));
+								
+		assertEquals(Status.ENCERRADO, operacao.status());
+	}
+	
+	@Test
+	public void obterOperacoesEmAberto(){
+		construirOperacoesEmAberto();
+		Set<Operacao> operacoes = repositorio.buscaOperacoesEmAberto();
+		assertEquals(3, operacoes.size());
+	}
+
+	@Test
+	public void obterOperacoesEncerradas(){
+		construirOperacoesEncerradas();
+		Set<Operacao> operacoes = repositorio.buscaOperacoesEncerradas();
+		assertEquals(3, operacoes.size());
+	}
+	
+	public Operacao constroiOperacao(){
+		Operacao operacao = new Operacao(repositorio.novaIdentidade(), 
+										 Casa.BETFAIR, 
+										 Esporte.FUTEBOL, 
+										 LocalDate.now(), 
+										 "REAL MADRID", 
+										 "BARCELONA");
+		return operacao;
+	}
+	
+	private void construirOperacoesEmAberto() {
 		
-		for (Aposta ap : operacao.apostas()) {
-			repositorio.informarResultadoDaAposta(operacao.id(), ap.id(), new Double(150));
-		}
-		//assertEquals(Status.ENCERRADO, operacao.status());
+		Operacao operacao1 = constroiOperacao();
+		repositorio.salvar(operacao1);
+		apostaServico.novaAposta(new ApostaComando(operacao1.operacaoId().id(), "1111", new Double(1.5),new Double(100),new Double(150)));
+		apostaServico.novaAposta(new ApostaComando(operacao1.operacaoId().id(), "2222", new Double(1.3),new Double(100),new Double(130)));
+		apostaServico.novaAposta(new ApostaComando(operacao1.operacaoId().id(), "3333", new Double(1.2),new Double(100),new Double(120)));
 		
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao1.operacaoId().id(), 
+																  "1111", 
+																  new Double(1.5),
+																  new Double(100),
+																  new Double(150),
+																  new Double(150),
+																  false));
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao1.operacaoId().id(), 
+																  "2222", 
+																  new Double(1.3),
+																  new Double(100),
+																  new Double(130),
+																  new Double(-20),
+																  false));
+		
+		Operacao operacao2 = constroiOperacao();
+		repositorio.salvar(operacao2);
+		
+		apostaServico.novaAposta(new ApostaComando(operacao2.operacaoId().id(), "1111", new Double(1.5),new Double(100),new Double(150)));
+		apostaServico.novaAposta(new ApostaComando(operacao2.operacaoId().id(), "5555", new Double(1.3),new Double(100),new Double(130)));
+		apostaServico.novaAposta(new ApostaComando(operacao2.operacaoId().id(), "3333", new Double(1.2),new Double(100),new Double(120)));
+		
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao2.operacaoId().id(), 
+																  "1111", 
+																  new Double(1.5),
+																  new Double(100),
+																  new Double(150),
+																  new Double(110),
+																  false));
+		
+		Operacao operacao3 = constroiOperacao();
+		repositorio.salvar(operacao3);
+		apostaServico.novaAposta(new ApostaComando(operacao3.operacaoId().id(), "1111", new Double(1.5),new Double(100),new Double(150)));
+		apostaServico.novaAposta(new ApostaComando(operacao3.operacaoId().id(), "9999", new Double(1.3),new Double(100),new Double(130)));
+		apostaServico.novaAposta(new ApostaComando(operacao2.operacaoId().id(), "7777", new Double(1.2),new Double(100),new Double(120)));
+	}
+	
+	private void construirOperacoesEncerradas() {
+		
+		Operacao operacao1 = constroiOperacao();
+		repositorio.salvar(operacao1);
+		apostaServico.novaAposta(new ApostaComando(operacao1.operacaoId().id(), 
+												   "1111", 
+												   new Double(1.5),
+												   new Double(100),
+											       new Double(150)));
+		apostaServico.novaAposta(new ApostaComando(operacao1.operacaoId().id(), 
+												   "2222", 
+												   new Double(1.3),
+												   new Double(100),
+											       new Double(130)));
+		apostaServico.novaAposta(new ApostaComando(operacao1.operacaoId().id(), 
+												   "3333", 
+												   new Double(1.2),
+												   new Double(100),
+											       new Double(120)));
+		
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao1.operacaoId().id(), 
+																  "1111", 
+																  new Double(1.5),
+																  new Double(100),
+																  new Double(150),
+																  new Double(150),
+																  false));
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao1.operacaoId().id(), 
+																  "2222", 
+																  new Double(1.3),
+																  new Double(100),
+																  new Double(130),
+																  new Double(100),
+																  false));
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao1.operacaoId().id(), 
+																  "3333", 
+																  new Double(1.2),
+																  new Double(100),
+																  new Double(120),
+																  new Double(-55),
+																  false));
+		
+		Operacao operacao2 = constroiOperacao();
+		repositorio.salvar(operacao2);
+		apostaServico.novaAposta(new ApostaComando(operacao2.operacaoId().id(), 
+												   "1111", 
+												   new Double(1.5),
+												   new Double(100),
+											       new Double(150)));
+		apostaServico.novaAposta(new ApostaComando(operacao2.operacaoId().id(), 
+												   "5555", 
+												   new Double(1.3),
+												   new Double(100),
+											       new Double(130)));
+		apostaServico.novaAposta(new ApostaComando(operacao2.operacaoId().id(), 
+												   "3333", 
+												   new Double(1.2),
+												   new Double(100),
+											       new Double(120)));
+
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao2.operacaoId().id(), 
+																  "1111", 
+																  new Double(1.5),
+																  new Double(100),
+																  new Double(150),
+																  new Double(-50),
+																  false));
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao2.operacaoId().id(), 
+																  "5555", 
+																  new Double(1.3),
+																  new Double(100),
+																  new Double(130),
+																  new Double(-30),
+																  false));
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao2.operacaoId().id(), 
+																  "3333", 
+																  new Double(1.2),
+																  new Double(100),
+																  new Double(120),
+																  new Double(-30),
+																  false));
+
+		Operacao operacao3 = constroiOperacao();
+		repositorio.salvar(operacao3);
+		apostaServico.novaAposta(new ApostaComando(operacao3.operacaoId().id(), 
+												   "1111", 
+												   new Double(1.5),
+												   new Double(100),
+											       new Double(150)));
+		apostaServico.novaAposta(new ApostaComando(operacao3.operacaoId().id(), 
+												   "9999", 
+												   new Double(1.3),
+												   new Double(100),
+											       new Double(130)));
+		apostaServico.novaAposta(new ApostaComando(operacao3.operacaoId().id(), 
+												   "7777", 
+												   new Double(1.2),
+												   new Double(100),
+											       new Double(120)));
+
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao3.operacaoId().id(), 
+																  "1111", 
+																  new Double(1.5),
+																  new Double(100),
+																  new Double(150),
+																  new Double(-50),
+																  false));
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao3.operacaoId().id(), 
+																  "9999", 
+																  new Double(1.3),
+																  new Double(100),
+																  new Double(130),
+																  new Double(-50),
+																  false));
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao3.operacaoId().id(), 
+																  "7777", 
+																  new Double(1.2),
+																  new Double(100),
+																  new Double(120),
+																  new Double(-50),
+																  false));
+
 	}
 }
