@@ -5,44 +5,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.time.LocalDate;
-
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import br.com.resumotrade.Application;
-import br.com.resumotrade.dominio.mercado.Esporte;
+import br.com.resumotrade.AbstractTest;
 import br.com.resumotrade.dominio.mercado.MercadoId;
 import br.com.resumotrade.dominio.operacao.aposta.Aposta;
 import br.com.resumotrade.dominio.operacao.aposta.ApostaComando;
-import br.com.resumotrade.dominio.operacao.aposta.ApostaService;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes=Application.class)
-@Transactional
-public class ApostaTest {
-	
-	@Autowired
-	private ApostaService servico;
-	
-	@Autowired
-	private OperacaoRepositorio operacaoRepositorio;
-	
-	@Autowired
-	protected EntityManager em;
+public class ApostaTest extends AbstractTest{
 	
 	@Test
 	public void novaAposta(){
 		Operacao operacao = construirOperacao();
-		operacaoRepositorio.salvar(operacao);
 		
-		servico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
 											 "1234", 
 											 new Double(1.5),
 											 new Double(100),
@@ -63,10 +39,10 @@ public class ApostaTest {
 	
 	@Test
 	public void alterarValoresDeUmaAposta(){
+		
 		Operacao operacao = construirOperacao();
-		operacaoRepositorio.salvar(operacao);
 
-		servico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
 											 "1234", 
 											 new Double(1.7),
 											 new Double(200),
@@ -96,9 +72,8 @@ public class ApostaTest {
 	public void adicionarResultadoDeUmaAposta(){
 		
 		Operacao operacao = construirOperacao();
-		operacaoRepositorio.salvar(operacao);
 		
-		servico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
 											 "1234", 
 											 new Double(1.7),
 											 new Double(200),
@@ -119,7 +94,7 @@ public class ApostaTest {
 		assertFalse(aposta.liquidada());
 		
 		
-		servico.informarResultadoDaAposta(new ApostaComando(operacao.operacaoId().id(), 
+		apostaServico.informarResultadoDaAposta(new ApostaComando(operacao.operacaoId().id(), 
 															"1234", 
 															new Double(1.7),
 															new Double(200),
@@ -138,46 +113,36 @@ public class ApostaTest {
 	
 	@Test
 	public void removerApostaDeUmaOperacao(){
-		Operacao operacao = construirOperacao();
-		operacaoRepositorio.salvar(operacao);
 		
-		servico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
+		Operacao operacao = construirOperacao();
+		
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
 				 "1111", 
 				 new Double(1.5),
 				 new Double(100),
 			     new Double(150)));
 		
-		servico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
 											 "2222", 
 											 new Double(1.3),
 											 new Double(100),
 										     new Double(130)));
 		
-		servico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
 											 "3333", 
 											 new Double(1.2),
 											 new Double(100),
 										     new Double(120)));
 		
-		servico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
+		apostaServico.novaAposta(new ApostaComando(operacao.operacaoId().id(), 
 											 "4444", 
 											 new Double(1.8),
 											 new Double(100),
 										     new Double(180)));
 		
-		servico.removerAposta(operacao.operacaoId().id(), "4444");
+		apostaServico.removerAposta(operacao.operacaoId().id(), "4444");
 		
 		assertEquals(3, operacaoRepositorio.buscarTodasApostas(operacao).size());
-	}
-	
-	public Operacao construirOperacao(){
-		Operacao operacao = new Operacao(operacaoRepositorio.novaIdentidade(), 
-										 Casa.BETFAIR, 
-										 Esporte.FUTEBOL, 
-										 LocalDate.now(), 
-										 "REAL MADRID", 
-										 "BARCELONA");
-		return operacao;
 	}
 
 	private void flushAndClear(){
