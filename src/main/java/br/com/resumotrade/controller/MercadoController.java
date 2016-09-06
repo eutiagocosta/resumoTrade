@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.resumotrade.dominio.mercado.Esporte;
+import br.com.resumotrade.dominio.mercado.MercadoComando;
 import br.com.resumotrade.dominio.mercado.MercadoId;
 import br.com.resumotrade.dominio.mercado.MercadoService;
-import br.com.resumotrade.dominio.mercado.comando.MercadoComando;
 
 //@Controller
 @RestController
@@ -27,16 +27,9 @@ public class MercadoController {
 		return new Retorno(servico.novoMercado(comando));
 	}
 	
-	@RequestMapping(value = "/alterar", method = RequestMethod.POST)
-	@ResponseBody 
-	public Retorno alterarMercado(@RequestBody MercadoComando comando) throws Exception{
-		return new Retorno(servico.alterarMercado(comando));
-	}
-	
-	@RequestMapping(value = "/excluir", method = RequestMethod.DELETE)
-	@ResponseBody 
-	public void excluirMercado(@RequestParam(value="mercadoId") String mercadoId) throws Exception{
-		servico.excluirMercado(new MercadoId(mercadoId));
+	@RequestMapping(value = "/excluir", method = RequestMethod.POST)
+	public void excluirMercado(@RequestBody MercadoComando comando) throws Exception{
+		servico.excluirMercado(new MercadoId(comando.getMercadoId()));
 	}
 	
 	@RequestMapping(value = "/porEsporte", method=RequestMethod.GET)

@@ -8,10 +8,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.resumotrade.dominio.mercado.comando.FabricaDeMercados;
-import br.com.resumotrade.dominio.mercado.comando.MercadoComando;
-import br.com.resumotrade.dominio.mercado.data.MercadoData;
-
 @Service
 @Transactional
 public class MercadoService {
@@ -50,18 +46,14 @@ public class MercadoService {
 	}
 	
 	private MercadoData contruir(Mercado mercado) {
-		return new MercadoData(mercado.id(), mercado.esporte().toString(), mercado.descricao());
+		return new MercadoData(mercado.mercadoId().id(), 
+							   mercado.id(), 
+							   mercado.esporte().toString(), 
+							   mercado.descricao());
 	}
 
 	public void remover(MercadoId mercadoId) {
 		repositorio.remover(mercadoId);
-	}
-
-	public Mercado alterarMercado(MercadoComando comando) {
-		Mercado mercado = repositorio.buscarMercadoPorId(new MercadoId(comando.getMercadoId()));
-		mercado.alterarDescricao(comando.getDescricao());
-		mercado.alterarEsporte(Esporte.buscarEsporte(comando.getEsporte()));
-		return mercado;
 	}
 
 	public void excluirMercado(MercadoId mercadoId) {

@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.resumotrade.dominio.operacao.OperacaoComando;
 import br.com.resumotrade.dominio.operacao.OperacaoId;
 import br.com.resumotrade.dominio.operacao.OperacaoService;
 import br.com.resumotrade.dominio.operacao.aposta.ApostaComando;
 import br.com.resumotrade.dominio.operacao.aposta.ApostaService;
-import br.com.resumotrade.dominio.operacao.comando.OperacaoComando;
 
 @RestController
 @RequestMapping("/operacao")
@@ -25,7 +25,7 @@ public class OperacaoController {
 	private ApostaService apostaServico;
 
 	@RequestMapping(value = "/nova", method = RequestMethod.POST)
-	@ResponseBody 
+	@ResponseBody
 	public Retorno novaOperacao(@RequestBody OperacaoComando comando)throws Exception{
 		return new Retorno(operacaoServico.novaOperacao(comando));
 	}
@@ -38,8 +38,8 @@ public class OperacaoController {
 	
 	@RequestMapping(value = "/buscarPeloId", method = RequestMethod.GET)
 	@ResponseBody
-	public Retorno buscarOperacaoPorId(@RequestBody String id) throws Exception{
-		return new Retorno(operacaoServico.buscarOperacaoPorId(new OperacaoId(id)));
+	public Retorno buscarOperacaoPorId(@RequestParam(value="operacaoId") String operacaoId) throws Exception{
+		return new Retorno(operacaoServico.buscarOperacaoPorId(new OperacaoId(operacaoId)));
 	}
 	
 	@RequestMapping(value = "/buscar_abertos", method = RequestMethod.GET)

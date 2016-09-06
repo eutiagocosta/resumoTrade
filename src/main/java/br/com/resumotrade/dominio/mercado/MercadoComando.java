@@ -1,4 +1,4 @@
-package br.com.resumotrade.dominio.mercado.comando;
+package br.com.resumotrade.dominio.mercado;
 
 public class MercadoComando {
 

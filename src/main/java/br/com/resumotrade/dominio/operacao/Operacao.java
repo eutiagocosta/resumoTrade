@@ -1,6 +1,6 @@
 package br.com.resumotrade.dominio.operacao;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import br.com.resumotrade.dominio.mercado.Esporte;
 import br.com.resumotrade.dominio.mercado.MercadoId;
@@ -38,7 +40,9 @@ public class Operacao {
 	@Enumerated(EnumType.STRING)
 	private Esporte esporte;
 	
-	private LocalDate data;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date data;
+	
 	private String mandante;
 	private String visitante;
 	
@@ -48,7 +52,7 @@ public class Operacao {
 	@OneToMany(mappedBy="operacao",cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
 	private Set<Aposta> apostas;
 
-	public Operacao(OperacaoId operacaoId, Casa casa, Esporte esporte, LocalDate data, String mandante, String visitante) {
+	public Operacao(OperacaoId operacaoId, Casa casa, Esporte esporte, Date data, String mandante, String visitante) {
 		this.operacaoId = operacaoId;
 		this.casa = casa;
 		this.esporte = esporte;
@@ -90,7 +94,7 @@ public class Operacao {
 		return this.visitante;
 	}
 	
-	public LocalDate data(){
+	public Date data(){
 		return this.data;
 	}
 	
@@ -106,8 +110,8 @@ public class Operacao {
 		this.setVisitante(visitante);
 	}
 	
-	public void alterarData(String data) {
-		this.data = LocalDate.parse(data);
+	public void alterarData(Date data) {
+		this.data = data;
 	}
 
 	public void alterarMandante(String mandante) {
@@ -133,7 +137,7 @@ public class Operacao {
 		this.esporte = esporte;
 	}
 
-	public void setData(LocalDate data) {
+	public void setData(Date data) {
 		this.data = data;
 	}
 

@@ -22,13 +22,17 @@ public class ApostaService {
 	@Autowired
 	private ApostaRepositorio apostaRepositorio;
 
-	public Aposta novaAposta(ApostaComando comando) {
+	public ApostaData novaAposta(ApostaComando comando) {
 		Operacao operacao = operacaoRepositorio.buscarOperacaoPorId(new OperacaoId(comando.getOperacaoId()));
 		Aposta aposta = criarAposta(new MercadoId(comando.getMercadoId()), comando.getOdd(), comando.getStake(), comando.getPotencial(), operacao);
 		apostaRepositorio.salvar(aposta);
-		return aposta;
+		return construir(aposta);
 	}
 	
+	private ApostaData construir(Aposta aposta) {
+		return new ApostaData(aposta.mercadoId().id(), aposta.odd(), aposta.stake(), aposta.potencial());
+	}
+
 	private Aposta criarAposta(MercadoId mercadoId, Double odd, Double stake, Double potencial, Operacao operacao) {
 		return operacao.novaAposta(mercadoId, odd, stake, potencial);
 	}

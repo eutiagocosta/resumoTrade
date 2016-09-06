@@ -1,10 +1,7 @@
-package br.com.resumotrade.dominio.mercado.comando;
+package br.com.resumotrade.dominio.mercado;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import br.com.resumotrade.dominio.mercado.Mercado;
-import br.com.resumotrade.dominio.mercado.MercadoService;
 
 @Service
 public class FabricaDeMercados {
@@ -18,6 +15,8 @@ public class FabricaDeMercados {
 			return Mercado.novoFutebol(servico.novaIdentidade(), comando.getDescricao());
 		case "BASQUETE":
 			return Mercado.novoBasquete(servico.novaIdentidade(), comando.getDescricao());
+		case "ESPORTES A MOTOR":
+			return Mercado.novoMotor(servico.novaIdentidade(), comando.getDescricao());
 		default:
 			throw new RuntimeException("ERRO AO CRIAR NOVO MERCADO");
 		}

@@ -1,24 +1,34 @@
-package br.com.resumotrade.dominio.operacao.comando;
+package br.com.resumotrade.dominio.operacao;
 
-public class OperacaoData {
+import java.util.Date;
+
+public class OperacaoComando {
 
 	private String operacaoId;
 	private String casa;
 	private String esporte;
-	private String data;
+	private Date data;
 	private String mandante;
 	private String visitante;
 	
-	public OperacaoData(){}
+	public OperacaoComando(){}
 
-	public OperacaoData(String operacaoId, String casa, String esporte, String data, String mandante, String visitante) {
-
-		this.operacaoId = operacaoId;
-		this.casa = casa;
-		this.esporte = esporte;
-		this.data = data;
-		this.mandante = mandante;
-		this.visitante = visitante;
+	/*public OperacaoComando(String operacaoId, String casa, String esporte, Date data, String mandante, String visitante) {
+		setOperacaoId(operacaoId);
+		setCasa(casa);
+		setEsporte(esporte);
+		setData(data);
+		setMandante(mandante);
+		setVisitante(visitante);
+	}*/
+	
+	public OperacaoComando(String casa, String esporte, Date data, String mandante, String visitante) {
+		super();
+		setCasa(casa);
+		setEsporte(esporte);
+		setData(data);
+		setMandante(mandante);
+		setVisitante(visitante);
 	}
 
 	public String getCasa() {
@@ -37,11 +47,11 @@ public class OperacaoData {
 		this.esporte = esporte;
 	}
 
-	public String getData() {
+	public Date getData() {
 		return data;
 	}
 
-	public void setData(String data) {
+	public void setData(Date data) {
 		this.data = data;
 	}
 
@@ -68,5 +78,5 @@ public class OperacaoData {
 	public void setOperacaoId(String operacaoId) {
 		this.operacaoId = operacaoId;
 	}
-		
+	
 }

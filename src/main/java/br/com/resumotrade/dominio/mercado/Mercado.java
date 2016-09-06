@@ -40,6 +40,10 @@ public class Mercado {
 	public static Mercado novoBasquete(MercadoId mercadoId, String descricao) {
 		return new Mercado(mercadoId, Esporte.BASQUETE, descricao);
 	}
+	
+	public static Mercado novoMotor(MercadoId mercadoId, String descricao) {
+		return new Mercado(mercadoId, Esporte.ESPORTES_A_MOTOR, descricao);
+	}
 
 	private Mercado(){}
 	

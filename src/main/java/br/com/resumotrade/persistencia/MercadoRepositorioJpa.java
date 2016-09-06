@@ -28,9 +28,10 @@ public class MercadoRepositorioJpa implements MercadoRepositorio{
 	@Override
 	public void remover(MercadoId mercadoId) {
 		Mercado mercado = this.buscarMercadoPorId(mercadoId);
-		if (mercado != null){
-			repositorio.delete(mercado);
+		if (mercado == null){
+			throw new RuntimeException("Mercado não encontrado para exclusão.");
 		}
+		repositorio.delete(mercado);
 	}
 
 	@Override

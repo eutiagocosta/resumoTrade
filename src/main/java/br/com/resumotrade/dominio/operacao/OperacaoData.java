@@ -1,17 +1,19 @@
-package br.com.resumotrade.dominio.operacao.comando;
+package br.com.resumotrade.dominio.operacao;
 
-public class OperacaoComando {
+import java.util.Date;
+
+public class OperacaoData {
 
 	private String operacaoId;
 	private String casa;
 	private String esporte;
-	private String data;
+	private Date data;
 	private String mandante;
 	private String visitante;
 	
-	public OperacaoComando(){}
+	public OperacaoData(){}
 
-	public OperacaoComando(String operacaoId, String casa, String esporte, String data, String mandante, String visitante) {
+	public OperacaoData(String operacaoId, String casa, String esporte, Date data, String mandante, String visitante) {
 		setOperacaoId(operacaoId);
 		setCasa(casa);
 		setEsporte(esporte);
@@ -36,11 +38,11 @@ public class OperacaoComando {
 		this.esporte = esporte;
 	}
 
-	public String getData() {
+	public Date getData() {
 		return data;
 	}
 
-	public void setData(String data) {
+	public void setData(Date data) {
 		this.data = data;
 	}
 
@@ -67,5 +69,5 @@ public class OperacaoComando {
 	public void setOperacaoId(String operacaoId) {
 		this.operacaoId = operacaoId;
 	}
-	
+		
 }

@@ -1,15 +1,23 @@
-package br.com.resumotrade.dominio.mercado.data;
+package br.com.resumotrade.dominio.mercado;
 
 public class MercadoData {
 	
+	private String mercadoId;
 	private Long id;
 	private String esporte;
 	private String descricao;
 	
 	public MercadoData(Long id, String esporte, String descricao) {
-		this.id = id;
-		this.esporte = esporte;
-		this.descricao = descricao;
+		setId(id);
+		setEsporte(esporte);
+		setDescricao(descricao);
+	}
+	
+	public MercadoData(String mercadoId, Long id, String esporte, String descricao) {
+		setMercadoId(mercadoId);
+		setId(id);
+		setEsporte(esporte);
+		setDescricao(descricao);
 	}
 	
 	public Long getId() {
@@ -36,6 +44,14 @@ public class MercadoData {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public String getMercadoId() {
+		return mercadoId;
+	}
+
+	public void setMercadoId(String mercadoId) {
+		this.mercadoId = mercadoId;
 	}
 
 }

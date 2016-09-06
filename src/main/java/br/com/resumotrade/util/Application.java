@@ -1,6 +1,8 @@
-package br.com.resumotrade;
+package br.com.resumotrade.util;
 
-import java.time.LocalDate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.sql.DataSource;
 
@@ -14,12 +16,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
 
 @SpringBootApplication
 //@EnableAutoConfiguration
 @EnableTransactionManagement
-@EnableWebMvc
 @ComponentScan(basePackages = "br.com.resumotrade")
 @EnableJpaRepositories(basePackages = "br.com.resumotrade")
 @EntityScan(basePackages = "br.com.resumotrade")
@@ -32,9 +35,18 @@ public class Application {
 		return DataSourceBuilder.create().build();
 	}
 	
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-        System.out.println("Teste hora: " + LocalDate.parse("2016-08-15"));
+	@Bean
+	ObjectMapper jacksonObjectMapper() {
+		return new CustomJacksonObjectMapper();
+	}
+
+	@Bean
+	SerializationConfig serializationConfig() {
+		return jacksonObjectMapper().getSerializationConfig();
+	}
+	
+    public static void main(String[] args) throws ParseException {
+    	SpringApplication.run(Application.class, args);
     }
 
 }
